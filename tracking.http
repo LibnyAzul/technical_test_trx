@@ -1,0 +1,27 @@
+
+@api = http://localhost:3000
+
+POST {{api}}/tracking
+Content-Type: application/json
+
+{
+    "latitude": "20.659431",
+    "longitude": "-103.402284",
+    "vehicleId": "65f89495d7a31a44ce738039"
+}
+
+
+###
+GET {{api}}/tracking/65f891634327b8c0ea6b2c1b
+
+###
+DELETE {{api}}/tracking/65f891634327b8c0ea6b2c1b
+
+###
+POST {{api}}/tracking/date
+Content-Type: application/json
+
+{
+    "startDate": "2024-03-18",
+    "endDate": "2024-03-19"
+}

@@ -3,23 +3,26 @@
 GET {{api}}/vehicle
 
 ###
-GET {{api}}/vehicle/65f78a7f0d4ffba05b60fda6
+GET {{api}}/vehicle/65f78b8a5ed2ffd1c4b6d763
 
 ###
 POST {{api}}/vehicle
 Content-Type: application/json
 
 {
-    "plate": "62622",
-    "economicNumber": "512561254",
-    "vim": "WAUDH98E36A1439",
-    "seats": 30,
-    "insurance": "Conn-Kuhic",
-    "insuranceNumber": "2215",
-    "brand": "Kia",
-    "model": "Rio",
-    "year": 2005,
-    "color": "Blue"
+    "plate": "7400346636",
+    "economicNumber": "5530308996",
+    "vim": "1G6KE54Y74U628212",
+    "seats": 15,
+    "insurance": "Satterfield LLC",
+    "insuranceNumber": "2956874047",
+    "brand": "Toyota",
+    "model": "Corolla",
+    "year": 2000,
+    "color": "Turquoise",
+    "tracking": [
+        "65f8912b4327b8c0ea6b2c19"
+    ]
 }
 
 ###
@@ -46,3 +49,6 @@ Content-Type: application/json
 
 ###
 POST {{api}}/vehicle/search/seats/32
+
+###
+GET {{api}}/vehicle/tracking/65f89495d7a31a44ce738039

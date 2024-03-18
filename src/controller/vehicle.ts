@@ -1,6 +1,7 @@
 import { RequestHandler } from "express";
 import _ from "lodash";
-import Vehicle from "./vehicle";
+import Vehicle from "../entity/vehicle";
+import Tracking from "../entity/tracking";
 
 /**
  * Valida los campos requeridos y únicos para un vehículo.
@@ -89,17 +90,61 @@ export const createVehicle: RequestHandler = async (req, res) => {
  * @returns Un objeto JSON que contiene una lista de vehículos o un mensaje de error si ocurre algún problema.
  */
 export const getVehicles: RequestHandler = async (req, res) => {
-  try {
-    // Obtener todos los vehículos de la base de datos
-    const vehicle = await Vehicle.find();
-    return res.json(vehicle);
-  } catch (error: any) {
-    // Manejar cualquier error que ocurra durante la obtención de la lista de vehículos
-    res.status(500).json({
-      message: "Error when obtaining the list of vehicles ",
-      error: error.message,
+  const { objectsPerPage, page, filters } = req.body;
+
+  // Construir objeto de consulta dinámico basado en los filtros
+  const query: any = {};
+  if (filters && filters.length > 0) {
+    filters.forEach((filter: any) => {
+      switch (filter.filter) {
+        case "startWith":
+          // filter.field Like 'filter.value%'
+          query[filter.field] = { $regex: `^${filter.value}`, $options: "i" };
+          break;
+        case "endWith":
+          query[filter.field] = { $regex: `${filter.value}^`, $options: "i" };
+          break;
+        case "contains":
+          query[filter.field] = {
+            $regex: `.*${filter.value}.*`,
+            $options: "i",
+          };
+          break;
+        case "equals":
+          query[filter.field] = filter.value;
+          break;
+        default:
+          // Manejar filtro no reconocido
+          break;
+      }
     });
   }
+
+  // Contar total de registros a partir de los filtros
+  const total = await Vehicle.countDocuments(query);
+
+  // Aplicar paginación
+  const skip = (page - 1) * objectsPerPage;
+
+  // se aplica la paginación, usando los filtros, pagina actual y los objetos por pagina
+  const vehicles = await Vehicle.find(query).skip(skip).limit(objectsPerPage);
+
+  // Calcular información de paginación
+  const maxPage = Math.ceil(total / objectsPerPage);
+  const previousPage = page > 1 ? page - 1 : 1;
+  const nextPage = page < maxPage ? page + 1 : maxPage;
+
+  // Respuesta
+  return res.json({
+    objectsPerPage,
+    page,
+    maxPage,
+    previousPage,
+    nextPage,
+    total,
+    filters,
+    list: vehicles,
+  });
 };
 
 /**
@@ -173,30 +218,25 @@ export const updateVehicle: RequestHandler = async (req, res) => {
   }
 };
 
-/**
- * Busca vehículos en la base de datos por un campo específico y un valor de búsqueda.
- * @param req El objeto de solicitud HTTP que contiene el nombre del campo y el valor de búsqueda.
- * @param res El objeto de respuesta HTTP que se utilizará para enviar los vehículos encontrados o mensajes de error.
- * @returns Un objeto JSON que contiene una lista de vehículos encontrados o un mensaje de error si no se encuentran vehículos o hay problemas de búsqueda.
- */
-export const searchVehicleByField: RequestHandler = async (req, res) => {
+export const getTrackigByVehicle: RequestHandler = async (req, res) => {
   try {
-    const fieldName = req.params.fieldName; // Nombre del campo por el que se desea buscar
-    const searchValue = req.params.searchValue; // Valor a buscar en el campo
-
-    // Realizar la búsqueda en la base de datos utilizando el método find
-    const vehicles = await Vehicle.find({ [fieldName]: searchValue });
-
-    // Si se encontraron vehículos, devolverlos en la respuesta
-    if (vehicles.length > 0) {
-      return res.json({ vehicles });
-    } else {
-      return res.status(404).json({ message: "No vehicles found" });
+    // Busca el vehículo por su ID
+    const vehicle = await Vehicle.findById(req.params.vehicleId);
+    if (!vehicle) {
+      return res.status(404).json({ message: "Vehicle not found" });
     }
-  } catch (error: any) {
-    // Manejar cualquier error que ocurra durante la búsqueda
-    return res
-      .status(500)
-      .json({ message: "Error searching vehicles", error: error.message });
+
+    // Obtiene la lista de IDs de trackings asociados a ese vehículo
+    const trackingIds = vehicle.tracking;
+
+    // Busca los trackings correspondientes en la base de datos
+    const trackings = await Tracking.find({ _id: { $in: trackingIds } });
+
+    // Retorna los trackings encontrados
+    res.json(trackings);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
+

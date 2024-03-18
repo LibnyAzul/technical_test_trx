@@ -1,62 +1,13 @@
-import { Schema, model } from "mongoose";
+import { Router } from "express";
+import * as vehicleCtr from "../controller/vehicle";
 
-const vehicleSchema = new Schema(
-  {
-    plate: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    economicNumber: {
-      type: String,
-      required: true,
-    },
-    vim: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    seats: {
-      type: Number,
-      required: true,
-      trim: true,
-    },
-    insurance: {
-      type: String,
-      required: true,
-    },
-    insuranceNumber: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    brand: {
-      type: String,
-      required: true,
-    },
-    model: {
-      type: String,
-      required: true,
-    },
-    year: {
-      type: Number,
-      required: true,
-      trim: true,
-    },
-    color: {
-      type: String,
-      required: true,
-    },
-    alive: {
-      type: Boolean,
-      required: true,
-      default: true
-    },
-  },
-  {
-    versionKey: false,
-    timestamps: true,
-  }
-);
+const router = Router();
 
-export default model("Vehicle", vehicleSchema);
+router.post("/vehicle", vehicleCtr.getVehicles);
+router.get("/vehicle/:id", vehicleCtr.getVehicle);
+router.post("/vehicle", vehicleCtr.createVehicle);
+router.put("/vehicle/disabled/:id", vehicleCtr.deleteVehicle);
+router.put("/vehicle/:id", vehicleCtr.updateVehicle);
+router.get("/vehicle/tracking/:vehicleId", vehicleCtr.getTrackigByVehicle);
+
+export default router;
