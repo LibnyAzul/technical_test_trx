@@ -5,8 +5,8 @@ POST {{api}}/tracking
 Content-Type: application/json
 
 {
-    "latitude": "20.659431",
-    "longitude": "-103.402284",
+    "latitude": "20.905743",
+    "longitude": "-103.974921",
     "vehicleId": "65f89495d7a31a44ce738039"
 }
 
@@ -18,10 +18,17 @@ GET {{api}}/tracking/65f891634327b8c0ea6b2c1b
 DELETE {{api}}/tracking/65f891634327b8c0ea6b2c1b
 
 ###
-POST {{api}}/tracking/date
+POST {{api}}/tracking/vehicle/65f89495d7a31a44ce738039
 Content-Type: application/json
 
 {
-    "startDate": "2024-03-18",
-    "endDate": "2024-03-19"
+    "filters": [
+        {
+            "field": "createdAt",
+            "value": "2024-03-15, 2024-03-17",
+            "filter": "between"
+        }
+    ],
+    "objectsPerPage": 5,
+    "page": 1
 }

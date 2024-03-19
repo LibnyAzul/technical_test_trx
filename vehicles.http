@@ -1,6 +1,25 @@
 @api = http://localhost:3000
 
-GET {{api}}/vehicle
+POST {{api}}/vehicle
+Content-Type: application/json
+
+{
+    "filters": [
+        {
+            "field": "insurance",
+            "value": "Conn",
+            "filter": "startWith"
+        }
+    ],
+    "objectsPerPage": 5,
+    "page": 1
+}
+
+        # {
+        #     "field": "color",
+        #     "value": "Blue",
+        #     "filter": "equals"
+        # }
 
 ###
 GET {{api}}/vehicle/65f78b8a5ed2ffd1c4b6d763
