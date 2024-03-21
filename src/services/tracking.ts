@@ -17,6 +17,7 @@ export const List = async (data: any): Promise<AxiosResponse | any> => {
     );
     return response.data;
   } catch (err) {
+    // TODO: Manejo de errores
     return ("Error Interno, por favor intente nuevamente");
   }
 };

@@ -4,8 +4,8 @@ import { IVehicle } from "../components/models/vehicle";
 
 const API = 'http://localhost:3000';
 
-export const getVehicles = async (pagionation: IPagination) => {
-    return await axios.post<IPagination>(`${API}/vehicle`, pagionation);
+export const getVehicles = async (pagination: IPagination) => {
+    return await axios.post<IPagination>(`${API}/vehicle`, pagination);
 }
 
 export const createVehicle = async (vehicle: IVehicle) => {
@@ -20,8 +20,8 @@ export const updateVehicle = async (id: string, vehicle: IVehicle) => {
     return await axios.put<IVehicle>(`${API}/vehicle/${id}`, vehicle);
 }
 
-export const deleteVehicle = async (id: string) => {
-    return await axios.put<IVehicle>(`${API}/vehicle/disabled/${id}`);
+export const deleteVehicle = async (id: string, alive: boolean) => {
+    return await axios.put<IVehicle>(`${API}/vehicle/disabled/${id}`, {alive});
 }
 
 export const getTrackigByVehicle = async (vehicleId: string) => {

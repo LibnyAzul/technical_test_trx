@@ -49,13 +49,13 @@ export const iVehicle: IVehicle = {
 // Stard DataGrid Components
 export const GenerateColumns = (navigate: any, ChangeAlive: any): any => {
   const columns: GridColumns = [
+    // {
+    //   field: "id",
+    //   headerName: "Identificador",
+    //   type: "string",
+    // },
     {
-      field: "id",
-      headerName: "Identificador",
-      type: "string",
-    },
-    {
-      field: "plates",
+      field: "plate",
       headerName: "Placas",
       type: "string",
       flex: 1,

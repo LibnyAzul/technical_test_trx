@@ -253,7 +253,7 @@ const TestDataGrid: FC<TestDataGridProps> = (props: TestDataGridProps) => {
           page={props.objectForPagination.page}
           variant="outlined"
           color="primary"
-          onChange={(_, value: any) => {
+          onChange={(_i: any, value: any) => {
             pagination.page = value;
             props.setObjectForPagination(pagination);
             props.getList();

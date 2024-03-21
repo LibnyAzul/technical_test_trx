@@ -1,10 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Box,
-  Card,
-  CardContent,
-  CardHeader,
-} from "@mui/material";
+import { Box, Card, CardContent, CardHeader } from "@mui/material";
 import * as VehicleService from "../services/vehicle";
 import { useNavigate } from "react-router-dom";
 import IPagination, { iPagination } from "../components/models/pagination";
@@ -47,15 +42,9 @@ const VehicleList = () => {
     setLoading(false);
   };
 
-  const ChangeAlive = async (id: number, alive: boolean): Promise<any> => {
-    // await ChangeStatus(id, alive).then((data: any) => {
-    //   if ('Error' in data) {
-    //     void dispatch(handleCustomAlert(ErrorCodes(data.Error, data.Message)));
-    //   } else {
-    //     void dispatch(handleCustomAlertSuccess(data));
-    //     void getList();
-    //   }
-    // });
+  const ChangeAlive = async (id: string, alive: boolean): Promise<any> => {
+    await VehicleService.deleteVehicle(id, !alive);
+    getList();
   };
 
   useEffect(() => {
