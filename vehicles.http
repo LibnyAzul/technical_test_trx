@@ -46,6 +46,11 @@ Content-Type: application/json
 
 ###
 PUT {{api}}/vehicle/disabled/65f78b8a5ed2ffd1c4b6d763
+Content-Type: application/json
+
+{
+    "alive": false
+}
 
 ###
 PUT {{api}}/vehicle/65f792c04d5202c365de394d

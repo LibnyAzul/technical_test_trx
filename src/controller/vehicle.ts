@@ -173,13 +173,17 @@ export const deleteVehicle: RequestHandler = async (req, res) => {
   // Buscar y actualizar el vehículo para establecer su estado 'alive' a falso
   const vehicleFound = await Vehicle.findByIdAndUpdate(
     req.params.id,
-    { alive: false },
+    req.body,
     { new: true }
   );
   if (!vehicleFound) {
     return res.status(204).json({ message: "Vehicle not found" });
   }
-  return res.status(200).json({ vehicleFound, message: "Vehicle Deleted" });
+  vehicleFound.alive = req.body.alive;
+  await vehicleFound.save();
+  return res
+    .status(200)
+    .json({ vehicleFound, message: `Vehicle status set to ${req.body.alive}` });
 };
 
 /**
@@ -239,4 +243,3 @@ export const getTrackigByVehicle: RequestHandler = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
