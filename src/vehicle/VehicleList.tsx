@@ -1,26 +1,30 @@
 import { useEffect, useState } from "react";
-import { Box, Card, CardContent, CardHeader } from "@mui/material";
+import { Box, Button, Card, CardContent, CardHeader, Fab } from "@mui/material";
 import * as VehicleService from "../services/vehicle";
 import { useNavigate } from "react-router-dom";
 import IPagination, { iPagination } from "../components/models/pagination";
 import { GenerateColumns, IVehicle } from "../components/models/vehicle";
 import DataGrid from "../components/dataGrid";
-import Alert from "@mui/material/Alert";
+import Alert, { AlertColor } from "@mui/material/Alert";
+import AddIcon from "@mui/icons-material/Add";
 
 const VehicleList = () => {
   const [vehicles, setVehicles] = useState<IVehicle[]>([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
   const [pagination, setPagination] = useState<IPagination>(iPagination);
+  const [typeAlert, setTypeAlert] = useState<AlertColor>();
+  const [showAlert, setShowAlert] = useState(false);
+  const [textAlert, setTextAlert] = useState("");
 
   const getList = async (): Promise<any> => {
     setLoading(true);
     await VehicleService.getVehicles(pagination).then((data: any) => {
       if (data !== undefined) {
         if ("Error" in data) {
-          <Alert severity="error">
-            Hubo un error al cargar la lista de Vehiculos
-          </Alert>;
+          setShowAlert(true);
+          setTextAlert("Hubo un error al cargar la lista de Vehiculos");
+          setTypeAlert("error");
         } else {
           const book = data.data;
           let list: IVehicle[] | any = [];
@@ -43,7 +47,13 @@ const VehicleList = () => {
   };
 
   const ChangeAlive = async (id: string, alive: boolean): Promise<any> => {
-    await VehicleService.deleteVehicle(id, !alive);
+    await VehicleService.deleteVehicle(id, !alive).then((data: any) => {
+      if (data.status === 200) {
+        setShowAlert(true);
+        setTextAlert(data.data.message);
+        setTypeAlert("success");
+      }
+    });
     getList();
   };
 
@@ -53,21 +63,22 @@ const VehicleList = () => {
 
   return (
     <Box>
+      {showAlert && (
+        <Alert severity={typeAlert} onClose={() => setShowAlert(false)}>
+          {textAlert}
+        </Alert>
+      )}
       <Card>
         <CardHeader
           action={
-            <>
-              {/* <CustomButton
-                navigate={navigate}
-                path="/entity/vehicle/add"
-                type="add"
-              />
-              <CustomButton
-                navigate={navigate}
-                path="/entity/vehicle/map"
-                type="map"
-              /> */}
-            </>
+            <Fab
+              color="primary"
+              size="small"
+              aria-label="add"
+              onClick={() => navigate("/vehicle/new-vehicle")}
+            >
+              <AddIcon />
+            </Fab>
           }
           id="parent-modal-description"
           title="Vehículos"

@@ -4,7 +4,9 @@ import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import VehicleList from "./vehicle/VehicleList";
-import AddVehicle from "./vehicle/AddVehicle";
+import AddOrEdit from "./vehicle/AddOrEdit";
+import ViewVehicle from "./vehicle/ViewVehicle";
+import Layout from "./components/layout";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -12,11 +14,15 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<VehicleList />} />
-        <Route path="/new-vehicle" element={<AddVehicle />} />
-      </Routes>
-    </BrowserRouter>
+        <Routes>
+          <Route element={<Layout />}>
+            <Route path="/" element={<VehicleList />} />
+            <Route path="/vehicle/new-vehicle" element={<AddOrEdit />} />
+            <Route path="/vehicle/details/:id" element={<ViewVehicle />} />
+            <Route path="/vehicle/edit/:id" element={<AddOrEdit />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
   </React.StrictMode>
 );
 

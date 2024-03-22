@@ -49,11 +49,6 @@ export const iVehicle: IVehicle = {
 // Stard DataGrid Components
 export const GenerateColumns = (navigate: any, ChangeAlive: any): any => {
   const columns: GridColumns = [
-    // {
-    //   field: "id",
-    //   headerName: "Identificador",
-    //   type: "string",
-    // },
     {
       field: "plate",
       headerName: "Placas",
@@ -152,7 +147,7 @@ export const GenerateColumns = (navigate: any, ChangeAlive: any): any => {
           key={`${params.id}-1`}
           icon={<VisibilityIcon sx={{ color: lightBlue.A700 }} />}
           label="Ver"
-          onClick={() => navigate(`/entity/vehicle/details/${params.id}`)}
+          onClick={() => navigate(`/vehicle/details/${params.id}`)}
           placeholder=""
           onPointerEnterCapture={() => {}}
           onPointerLeaveCapture={() => {}}
@@ -162,7 +157,7 @@ export const GenerateColumns = (navigate: any, ChangeAlive: any): any => {
           key={`${params.id}-2`}
           icon={<ModeEditOutlinedIcon sx={{ color: lightBlue.A700 }} />}
           label="Editar"
-          onClick={() => navigate(`/entity/vehicle/edit/${params.id}`)}
+          onClick={() => navigate(`/vehicle/edit/${params.id}`)}
           placeholder=""
           onPointerEnterCapture={() => {}}
           onPointerLeaveCapture={() => {}}

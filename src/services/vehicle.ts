@@ -9,7 +9,7 @@ export const getVehicles = async (pagination: IPagination) => {
 }
 
 export const createVehicle = async (vehicle: IVehicle) => {
-    return await axios.post(`${API}/vehicle`, vehicle);
+    return await axios.post(`${API}/vehicle/new`, vehicle);
 }
 
 export const getVehicle = async (id: string) => {
