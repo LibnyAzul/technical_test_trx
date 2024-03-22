@@ -25,20 +25,20 @@ Content-Type: application/json
 GET {{api}}/vehicle/65f78b8a5ed2ffd1c4b6d763
 
 ###
-POST {{api}}/vehicle
+POST {{api}}/vehicle/new
 Content-Type: application/json
 
 {
-    "plate": "7400346636",
-    "economicNumber": "5530308996",
-    "vim": "1G6KE54Y74U628212",
+    "plate": "985625484s",
+    "economicNumber": "66565w2s666w",
+    "vim": "85e6wTs444s45",
     "seats": 15,
     "insurance": "Satterfield LLC",
-    "insuranceNumber": "2956874047",
+    "insuranceNumber": "985555255",
     "brand": "Toyota",
     "model": "Corolla",
-    "year": 2000,
-    "color": "Turquoise",
+    "year": 2020,
+    "color": "Black",
     "tracking": [
         "65f8912b4327b8c0ea6b2c19"
     ]

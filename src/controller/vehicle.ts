@@ -74,7 +74,7 @@ export const createVehicle: RequestHandler = async (req, res) => {
     // Crear el vehículo si todos los campos requeridos están presentes y válidos
     const vehicle = new Vehicle(req.body);
     const savedVehicle = await vehicle.save();
-    res.json(savedVehicle);
+    res.status(200).json({savedVehicle, message: "Vehicle Saved"});
   } catch (error: any) {
     // Manejar cualquier error que ocurra durante la creación del vehículo
     res
