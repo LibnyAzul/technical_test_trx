@@ -9,9 +9,9 @@ import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import MapIcon from "@mui/icons-material/Map";
-import BackupIcon from "@mui/icons-material/Backup";
 import { green, red, lightBlue } from "@mui/material/colors";
 import { ITracking } from "./tracking";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export interface IVehicle {
   createdAt?: string | Date;
@@ -49,7 +49,7 @@ export const iVehicle: IVehicle = {
 
 // End Initial States
 // Stard DataGrid Components
-export const GenerateColumns = (navigate: any, ChangeAlive: any): any => {
+export const GenerateColumns = (navigate: any, ChangeAlive: any, handleOpen: any): any => {
   const columns: GridColumns = [
     {
       field: "plate",
@@ -167,7 +167,17 @@ export const GenerateColumns = (navigate: any, ChangeAlive: any): any => {
           sx={{ display: !params.row.alive ? "none" : "block" }}
         />,
         <GridActionsCellItem
-          key={`${params.id}-2`}
+          key={`${params.id}-3`}
+          icon={<DeleteIcon sx={{ color: red.A700 }} />}
+          label="Elimar"
+          onClick={() => handleOpen(params.row._id)}
+          placeholder=""
+          onPointerEnterCapture={() => {}}
+          onPointerLeaveCapture={() => {}}
+          showInMenu={false}
+        />,
+        <GridActionsCellItem
+          key={`${params.id}-4`}
           icon={<MapIcon sx={{ color: lightBlue[400] }} />}
           label="Mapa"
           onClick={() => navigate(`/vehicle/map/${params.id}`)}
@@ -175,17 +185,6 @@ export const GenerateColumns = (navigate: any, ChangeAlive: any): any => {
           onPointerEnterCapture={() => {}}
           onPointerLeaveCapture={() => {}}
           showInMenu={false}
-        />,
-        <GridActionsCellItem
-          key={`${params.id}-3`}
-          icon={<BackupIcon sx={{ color: lightBlue[400] }} />}
-          label="Importación"
-          onClick={() => navigate(`/tracking/import/${params.id}`)}
-          placeholder=""
-          onPointerEnterCapture={() => {}}
-          onPointerLeaveCapture={() => {}}
-          showInMenu={false}
-          sx={{ display: !params.row.alive ? "none" : "block" }}
         />,
       ],
     },

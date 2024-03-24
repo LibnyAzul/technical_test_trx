@@ -76,3 +76,16 @@ export const GetTrackigByVehicle = async (
     return err?.response?.data;
   }
 };
+
+export const DeletedVehicle = async (
+  id: string
+): Promise<AxiosResponse | any> => {
+  const URL: string = `${API}/vehicle/${id}`;
+  const method = "delete";
+  try {
+    const response: AxiosResponse = await axios[method](URL);
+    return response.data;
+  } catch (err: any) {
+    return err?.response?.data;
+  }
+};

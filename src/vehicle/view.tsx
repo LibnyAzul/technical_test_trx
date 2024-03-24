@@ -4,21 +4,24 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Fab,
   Grid,
   TextField,
   Typography,
 } from "@mui/material";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { IVehicle, iVehicle } from "../components/models/vehicle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import { green, red } from "@mui/material/colors";
+import { green, red, lightBlue } from "@mui/material/colors";
 import CustomAlerts, {
   ICustomAlerts,
   initialState as iCustomAlerts,
 } from "../components/alert";
+import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
 import _ from "lodash";
 import { GetVehicleById } from "../services/vehicle";
+import BackupIcon from "@mui/icons-material/Backup";
 
 const formatDate = (dateString: string | Date | undefined) => {
   if (!dateString) return "";
@@ -32,6 +35,7 @@ const formatDate = (dateString: string | Date | undefined) => {
 };
 
 const View = () => {
+  const navigate = useNavigate();
   const [vehicle, setVehicle] = useState<IVehicle>(iVehicle);
   const [alert, setAlert] = useState<ICustomAlerts>(iCustomAlerts);
   const { id } = useParams();
@@ -53,24 +57,48 @@ const View = () => {
     });
   };
 
-  const handleCloseAlert = () => setAlert(iCustomAlerts);
+  const handleCloseAlert = () => setAlert({ ...alert, open: false });
 
   useEffect(() => {
     if (id) {
       loadEntity(id);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   return (
     <Box>
       <Card>
         <CardHeader
+          action={
+            <Grid container spacing={2} alignItems="center">
+              <Grid item>
+                <Fab
+                  color="primary"
+                  size="small"
+                  aria-label="home"
+                  onClick={() => navigate("/")}
+                >
+                  <FormatListNumberedIcon />
+                </Fab>
+              </Grid>
+              <Grid item>
+                <Fab
+                  color="secondary"
+                  size="small"
+                  aria-label="home"
+                  onClick={() => navigate(`/tracking/import/${id}`)}
+                >
+                  <BackupIcon />
+                </Fab>
+              </Grid>
+            </Grid>
+          }
           id="View-Department"
           title="Detalles del Vehículo"
         />
         <CardContent>
-          <Grid container spacing={2}>
+          <Grid container spacing={5}>
             <Grid item xs={6}>
               <Typography
                 gutterBottom

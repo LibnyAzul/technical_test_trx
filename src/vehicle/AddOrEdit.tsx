@@ -87,7 +87,7 @@ const AddOrEdit = () => {
     }, 1000);
   };
 
-  const handleCloseAlert = () => setAlert(iCustomAlerts);
+  const handleCloseAlert = () => setAlert({ ...alert, open: false });
 
   return (
     <Box>

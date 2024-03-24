@@ -76,7 +76,7 @@ const MapView = () => {
     });
   };
 
-  const handleCloseAlert = () => setAlert(iCustomAlerts);
+  const handleCloseAlert = () => setAlert({ ...alert, open: false });
 
   const handlefilters = async () => {
     let pg: IPagination = iPagination;

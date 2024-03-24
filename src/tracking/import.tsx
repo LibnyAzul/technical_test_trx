@@ -47,7 +47,7 @@ const Imp: FC = () => {
     });
   };
 
-  const handleCloseAlert = () => setAlert(iCustomAlerts);
+  const handleCloseAlert = () => setAlert({ ...alert, open: false });
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
