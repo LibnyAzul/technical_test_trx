@@ -57,8 +57,17 @@ const AddOrEdit = () => {
     let isSaveOrUpdate: boolean = false;
 
     await SaveVehicle(vehicle).then((data: any) => {
-      isSaveOrUpdate = "savedVehicle" in data;
-      message = "message" in data ? data.message : "Error inesperado!";
+      if (isUpdate) {
+        isSaveOrUpdate = !_.isNil(data._id) && data._id !== "";
+      } else {
+        isSaveOrUpdate = "savedVehicle" in data;
+      }
+      message =
+        "message" in data
+          ? data.message
+          : isSaveOrUpdate
+          ? "Vehicle Update"
+          : "Error inesperado!";
     });
 
     setAlert({

@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 import IPagination from "../components/models/pagination";
 import { IVehicle } from "../components/models/vehicle";
+import _ from "lodash";
 
 const API: string = process.env.REACT_APP_API!;
 
@@ -23,11 +24,11 @@ export const SaveVehicle = async (
   vehicle: IVehicle | any
 ): Promise<AxiosResponse | any> => {
   const URL: string =
-    vehicle._id !== undefined && vehicle._id > 0
+    !_.isNil(vehicle._id) && vehicle._id !== ""
       ? `${API}/vehicle/${vehicle._id}`
       : `${API}/vehicle/new`;
   const method: "post" | "put" =
-    vehicle._id !== undefined && vehicle._id > 0 ? "put" : "post";
+    !_.isNil(vehicle._id) && vehicle._id !== "" ? "put" : "post";
   try {
     const response: AxiosResponse = await axios[method](URL, vehicle);
     return response.data;
