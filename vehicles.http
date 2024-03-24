@@ -29,9 +29,9 @@ POST {{api}}/vehicle/new
 Content-Type: application/json
 
 {
-    "plate": "985625484s",
-    "economicNumber": "66565w2s666w",
-    "vim": "85e6wTs444s45",
+    "plate": "558sjefe",
+    "economicNumber": "219125554e5",
+    "vim": "828232323",
     "seats": 15,
     "insurance": "Satterfield LLC",
     "insuranceNumber": "985555255",

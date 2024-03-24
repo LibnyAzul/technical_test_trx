@@ -62,7 +62,6 @@ export const trackingByDate: RequestHandler = async (req, res) => {
           case "equals":
             const equalDate = new Date(filter.value);
             equalDate.setUTCHours(0, 0, 0, 0);
-            console.log(equalDate);
             const endOfDay = new Date(equalDate);
             endOfDay.setUTCHours(23, 59, 59, 999);
             query[filter.column] = {
@@ -125,3 +124,54 @@ export const trackingByDate: RequestHandler = async (req, res) => {
     });
   }
 };
+
+export const saveAll: RequestHandler = async (req, res) => {
+  try {
+    const vehicleId = req.params.vehicleId; // Assuming vehicleId is in URL params
+
+    const vehicle = await Vehicle.findById(vehicleId);
+    if (!vehicle) {
+      return res.status(404).json({ message: "Vehicle not found" });
+    }
+
+    const trackings = req.body; // Cast body to Tracking[]
+
+    // Validate trackings
+    const validTrackings = trackings.filter((tracking: { latitude: any; longitude: any; }) => {
+      if (!tracking.latitude || !tracking.longitude) {
+        return false; // Missing required properties
+      }
+      return true;
+    });
+
+    if (validTrackings.length === 0) {
+      return res.status(400).json({ message: "No valid trackings provided" });
+    }
+
+    // Create and save trackings
+    const savedTrackings = await Promise.all(
+      validTrackings.map(async (tracking: { latitude: any; longitude: any; createdAt: string | number | Date; }) => {
+        const newTracking = new Tracking({
+          latitude: tracking.latitude,
+          longitude: tracking.longitude,
+          createdAt: tracking.createdAt ? new Date(tracking.createdAt) : undefined, // Set createDate if provided 
+        });
+        await newTracking.save();
+        return newTracking;
+      })
+    );
+
+    // Update vehicle with saved tracking IDs
+    vehicle.tracking.push(...savedTrackings.map((t) => t._id));
+    await vehicle.save();
+
+    return res
+      .status(201)
+      .json({ message: "Trackings created successfully", trackings: savedTrackings });
+  } catch (error: any) {
+    return res
+      .status(500)
+      .json({ message: "Error creating trackings", error: error.message });
+  }
+};
+
