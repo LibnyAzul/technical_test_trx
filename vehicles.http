@@ -22,7 +22,7 @@ Content-Type: application/json
         # }
 
 ###
-GET {{api}}/vehicle/65f78b8a5ed2ffd1c4b6d763
+GET {{api}}/vehicle/66006beb5a2c8ded9e4dd4d5
 
 ###
 POST {{api}}/vehicle/new
@@ -53,21 +53,25 @@ Content-Type: application/json
 }
 
 ###
-PUT {{api}}/vehicle/65f792c04d5202c365de394d
+PUT {{api}}/vehicle/66006beb5a2c8ded9e4dd4d5
 Content-Type: application/json
 
 {
-    "plate": "999999999999999",
-    "economicNumber": "512561254",
-    "vim": "WAUDH98E36A1439",
-    "seats": 18,
-    "insurance": "Conn-Kuhic",
-    "insuranceNumber": "2215",
-    "brand": "Kia",
-    "model": "Rio",
-    "year": 2005,
-    "color": "Blue",
-    "alive": true
+   "_id": "66006beb5a2c8ded9e4dd4d5",
+    "plate": "JFW-458-36",
+    "economicNumber": "7836547",
+    "vim": "7836547",
+    "seats": 4,
+    "insurance": "GNP Seguros",
+    "insuranceNumber": "95356842155",
+    "brand": "Renault",
+    "model": "Duster",
+    "year": 2022,
+    "color": "Cafe",
+    "alive": true,
+    "tracking": [],
+    "createdAt": "2024-03-24T18:07:39.047Z",
+    "updatedAt": "2024-03-24T18:32:35.154Z"
 }
 
 

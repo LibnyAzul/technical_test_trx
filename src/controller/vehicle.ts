@@ -34,21 +34,48 @@ const validateRequiredFields = async (req: any, id: string) => {
   // Lista de campos únicos para un vehículo
   const uniqueFields = ["plate", "economicNumber", "vim", "insuranceNumber"];
 
+  // Verificar si los campos únicos han sido modificados
+  const uniqueFieldsModified = uniqueFields.filter(
+    (field) => req[field] && req[field] !== ""
+  );
+
+  console.log(uniqueFieldsModified)
+  if (uniqueFieldsModified.length === 0) {
+    // Si no se han modificado los campos únicos, omitir la validación
+    return { valid: true };
+  }
+
   // Verificar si los campos únicos ya existen en la base de datos
-  for (const field of uniqueFields) {
-          // Construir la consulta para buscar un vehículo con el campo único proporcionado
-      const query = { [field]: req[field] };
-      if (id !== "") {
-        query._id = { $ne: id };
-      }
-      // Buscar un vehículo con el campo único en la base de datos
-      const vehicleFound = await Vehicle.findOne(query);
-      if (vehicleFound) {
-        return { valid: false, message: `The ${field} already exists` };
-      }
+  for (const field of uniqueFieldsModified) {
+    // Construir la consulta para buscar un vehículo con el campo único proporcionado
+    const query = { [field]: req[field] };
+    if (id !== "") {
+      query._id = { $ne: id };
     }
-    // Si pasa todas las validaciones, el vehículo es válido
+    // Buscar un vehículo con el campo único en la base de datos
+    const vehicleFound = await Vehicle.findOne(query);
+    if (vehicleFound) {
+      return { valid: false, message: `The ${field} already exists` };
+    }
+  }
+
+  // Si pasa todas las validaciones, el vehículo es válido
   return { valid: true };
+  // // Verificar si los campos únicos ya existen en la base de datos
+  // for (const field of uniqueFields) {
+  //         // Construir la consulta para buscar un vehículo con el campo único proporcionado
+  //     const query = { [field]: req[field] };
+  //     if (id !== "") {
+  //       query._id = { $ne: id };
+  //     }
+  //     // Buscar un vehículo con el campo único en la base de datos
+  //     const vehicleFound = await Vehicle.findOne(query);
+  //     if (vehicleFound) {
+  //       return { valid: false, message: `The ${field} already exists` };
+  //     }
+  //   }
+  //   // Si pasa todas las validaciones, el vehículo es válido
+  // return { valid: true };
 };
 
 /**
