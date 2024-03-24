@@ -13,7 +13,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { IVehicle, iVehicle } from "../components/models/vehicle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import { green, red, lightBlue } from "@mui/material/colors";
+import { green, red } from "@mui/material/colors";
 import CustomAlerts, {
   ICustomAlerts,
   initialState as iCustomAlerts,
