@@ -15,8 +15,6 @@ const Map: FC<IProps> = ({ coors, vehicle }) => {
     const map = new google.maps.Map(
       document.getElementById("map") as HTMLElement,
       {
-        zoom: 13,
-        center: coors[coors.length - 1],
         mapTypeId: "terrain",
         mapTypeControlOptions: {
           mapTypeIds: [
@@ -29,6 +27,15 @@ const Map: FC<IProps> = ({ coors, vehicle }) => {
         },
       }
     );
+
+    // Crear un objeto LatLngBounds para calcular el centro y el zoom óptimos
+    const bounds = new google.maps.LatLngBounds();
+    // Añadir cada coordenada al objeto bounds
+    coors.forEach((coord: google.maps.LatLngLiteral) => {
+      bounds.extend(coord);
+    });
+    // Centrar y ajustar el zoom del mapa según las coordenadas
+    map.fitBounds(bounds);
     //Associate the styled map with the MapTypeId and set it to display.
     map.mapTypes.set(
       "styled_map",
@@ -154,7 +161,7 @@ const Map: FC<IProps> = ({ coors, vehicle }) => {
     const flightPath = new google.maps.Polyline({
       path: coors,
       geodesic: true,
-      strokeColor: "#0066ba",
+      strokeColor: "#8C00FF",
       strokeOpacity: 1.0,
       strokeWeight: 2,
     });
