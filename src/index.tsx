@@ -8,6 +8,7 @@ import AddOrEdit from "./vehicle/AddOrEdit";
 import View from "./vehicle/view";
 import Layout from "./components/layout";
 import MapView from "./vehicle/MapView";
+import Imp from "./tracking/import";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -15,16 +16,17 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/" element={<List />} />
-            <Route path="/vehicle/new-vehicle" element={<AddOrEdit />} />
-            <Route path="/vehicle/details/:id" element={<View />} />
-            <Route path="/vehicle/edit/:id" element={<AddOrEdit />} />
-            <Route path="/vehicle/map/:id" element={<MapView />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<List />} />
+          <Route path="/vehicle/new-vehicle" element={<AddOrEdit />} />
+          <Route path="/vehicle/details/:id" element={<View />} />
+          <Route path="/vehicle/edit/:id" element={<AddOrEdit />} />
+          <Route path="/vehicle/map/:id" element={<MapView />} />
+          <Route path="/tracking/import/:id" element={<Imp />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   </React.StrictMode>
 );
 

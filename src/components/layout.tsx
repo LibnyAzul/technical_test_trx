@@ -1,10 +1,9 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
-import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -18,13 +17,9 @@ import Collapse from "@mui/material/Collapse";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import BackupTableIcon from "@mui/icons-material/BackupTable";
-import GroupRoundedIcon from "@mui/icons-material/GroupRounded";
 import MeetingRoomTwoToneIcon from "@mui/icons-material/MeetingRoomTwoTone";
 import HomeTwoToneIcon from "@mui/icons-material/HomeTwoTone";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
-// import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
-import Avatar from "@mui/material/Avatar";
-import { deepOrange } from "@mui/material/colors";
 import { AppBar, DrawerFooter, DrawerHeader, Main } from "./styles/layout";
 
 interface IPosition {
@@ -78,12 +73,6 @@ const Layout: FC = () => {
           >
             <MenuIcon />
           </IconButton>
-          {/* <Avatar sx={{ bgcolor: deepOrange[500] }}>
-            {user.name.substring(0, 2)}
-          </Avatar>
-          <Typography variant="h6" noWrap component="div" sx={{ pl: 1 }}>
-            {user.name}
-          </Typography> */}
         </Toolbar>
       </AppBar>
       <Drawer
@@ -102,7 +91,6 @@ const Layout: FC = () => {
               "linear-gradient(129deg, rgb(11 222 243 / 62%) 46.35%, rgb(79 108 205) 100%)",
           }}
         >
-          {/* <LogoStyled /> */}
           <IconButton onClick={handleDrawerClose} sx={{ ml: 3 }}>
             {theme.direction === "ltr" ? (
               <ChevronLeftIcon />
@@ -158,7 +146,6 @@ const Layout: FC = () => {
             </ListItemButton>
           </List>
         </DrawerFooter>
-        {/* Other Section */}
       </Drawer>
       <Main open={position.open}>
         <DrawerHeader />

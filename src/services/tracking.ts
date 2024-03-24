@@ -54,3 +54,17 @@ export const findByIdAndFilters = async (
     return err?.response?.data;
   }
 };
+
+export const saveAll = async (
+  vehicleId: string,
+  list: ITracking[]
+): Promise<AxiosResponse | any> => {
+  const URL: string = `${API}/tracking/saveAll/${vehicleId}`;
+  const method = "post";
+  try {
+    const response: AxiosResponse = await axios[method](URL, list);
+    return response.data;
+  } catch (err: any) {
+    return err?.response?.data;
+  }
+};

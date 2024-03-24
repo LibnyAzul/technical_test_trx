@@ -8,7 +8,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { IVehicle, iVehicle } from "../components/models/vehicle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
@@ -32,10 +32,8 @@ const formatDate = (dateString: string | Date | undefined) => {
 };
 
 const View = () => {
-  const navigate = useNavigate();
   const [vehicle, setVehicle] = useState<IVehicle>(iVehicle);
   const [alert, setAlert] = useState<ICustomAlerts>(iCustomAlerts);
-  const [loading, setLoading] = useState<boolean>(false);
   const { id } = useParams();
 
   const loadEntity = async (id: string) => {
@@ -61,26 +59,17 @@ const View = () => {
     if (id) {
       loadEntity(id);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   return (
     <Box>
       <Card>
         <CardHeader
-          //   action={
-          //     <CustomButton
-          //       navigate={navigate}
-          //       path="/entity/vehicle"
-          //       type="list"
-          //     />
-          //   }
           id="View-Department"
           title="Detalles del Vehículo"
         />
-        {/* <LoadingCustomComponent
-          style={loading ?? false ? {} : { display: "none" }}
-        /> */}
-        <CardContent style={loading ? { display: "none" } : {}}>
+        <CardContent>
           <Grid container spacing={2}>
             <Grid item xs={6}>
               <Typography

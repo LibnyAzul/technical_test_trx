@@ -180,7 +180,7 @@ export const GenerateColumns = (navigate: any, ChangeAlive: any): any => {
           key={`${params.id}-3`}
           icon={<BackupIcon sx={{ color: lightBlue[400] }} />}
           label="Importación"
-          onClick={() => navigate(`/vehicle/imposrt/${params.id}`)}
+          onClick={() => navigate(`/tracking/import/${params.id}`)}
           placeholder=""
           onPointerEnterCapture={() => {}}
           onPointerLeaveCapture={() => {}}

@@ -49,6 +49,7 @@ const AddOrEdit = () => {
     if (params && params.id) {
       loadEntity(params.id);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params]);
 
   const handleSave = async () => {

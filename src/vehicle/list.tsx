@@ -85,6 +85,7 @@ const List = () => {
 
   useEffect(() => {
     getList();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCloseAlert = () => setAlert(iCustomAlerts);
