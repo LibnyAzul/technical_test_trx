@@ -36,18 +36,18 @@ const validateRequiredFields = async (req: any, id: string) => {
 
   // Verificar si los campos únicos ya existen en la base de datos
   for (const field of uniqueFields) {
-    // Construir la consulta para buscar un vehículo con el campo único proporcionado
-    const query = { [field]: req[field] };
-    if (id !== "") {
-      query._id = { $ne: id };
+          // Construir la consulta para buscar un vehículo con el campo único proporcionado
+      const query = { [field]: req[field] };
+      if (id !== "") {
+        query._id = { $ne: id };
+      }
+      // Buscar un vehículo con el campo único en la base de datos
+      const vehicleFound = await Vehicle.findOne(query);
+      if (vehicleFound) {
+        return { valid: false, message: `The ${field} already exists` };
+      }
     }
-    // Buscar un vehículo con el campo único en la base de datos
-    const vehicleFound = await Vehicle.findOne(query);
-    if (vehicleFound) {
-      return { valid: false, message: `The ${field} already exists` };
-    }
-  }
-  // Si pasa todas las validaciones, el vehículo es válido
+    // Si pasa todas las validaciones, el vehículo es válido
   return { valid: true };
 };
 
@@ -74,7 +74,7 @@ export const createVehicle: RequestHandler = async (req, res) => {
     // Crear el vehículo si todos los campos requeridos están presentes y válidos
     const vehicle = new Vehicle(req.body);
     const savedVehicle = await vehicle.save();
-    res.status(200).json({savedVehicle, message: "Vehicle Saved"});
+    res.status(200).json({ savedVehicle, message: "Vehicle Saved" });
   } catch (error: any) {
     // Manejar cualquier error que ocurra durante la creación del vehículo
     res
@@ -127,7 +127,10 @@ export const getVehicles: RequestHandler = async (req, res) => {
   const skip = (page - 1) * objectsPerPage;
 
   // se aplica la paginación, usando los filtros, pagina actual y los objetos por pagina
-  const vehicles = await Vehicle.find(query).skip(skip).limit(objectsPerPage);
+  const vehicles = await Vehicle.find(query)
+    .select("-tracking")
+    .skip(skip)
+    .limit(objectsPerPage);
 
   // Calcular información de paginación
   const maxPage = Math.ceil(total / objectsPerPage);

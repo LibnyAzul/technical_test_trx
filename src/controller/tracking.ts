@@ -65,7 +65,7 @@ export const trackingByDate: RequestHandler = async (req, res) => {
             console.log(equalDate);
             const endOfDay = new Date(equalDate);
             endOfDay.setUTCHours(23, 59, 59, 999);
-            query[filter.field] = {
+            query[filter.column] = {
               $gte: equalDate,
               $lte: endOfDay,
             };
@@ -76,7 +76,7 @@ export const trackingByDate: RequestHandler = async (req, res) => {
             startOfDay.setUTCHours(0, 0, 0, 0);
             const endDay = new Date(endDate);
             endDay.setUTCHours(23, 59, 59, 999);
-            query[filter.field] = {
+            query[filter.column] = {
               $gte: startOfDay,
               $lte: endDay,
             };
@@ -91,16 +91,20 @@ export const trackingByDate: RequestHandler = async (req, res) => {
     // Contar total de registros a partir de los filtros
     const total = await Tracking.countDocuments(query);
 
-    // Aplicar paginación
-    const skip = (page - 1) * objectsPerPage;
+    let maxPage: number = 0;
+    let trackings: ITrackingDocument[] = [];
+    if (objectsPerPage < 0) {
+      trackings = await Tracking.find(query);
+    } else {
+      // Aplicar paginación
+      const skip = (page - 1) * objectsPerPage;
 
-    // Se aplica la paginación
-    const trackings: ITrackingDocument[] = await Tracking.find(query)
-      .skip(skip)
-      .limit(objectsPerPage);
+      // Se aplica la paginación
+      trackings = await Tracking.find(query).skip(skip).limit(objectsPerPage);
 
-    // Calcular información de paginación
-    const maxPage = Math.ceil(total / objectsPerPage);
+      // Calcular información de paginación
+      maxPage = Math.ceil(total / objectsPerPage);
+    }
     const previousPage = page > 1 ? page - 1 : 1;
     const nextPage = page < maxPage ? page + 1 : maxPage;
 

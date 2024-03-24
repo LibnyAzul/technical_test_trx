@@ -60,7 +60,7 @@ Content-Type: application/json
     "plate": "999999999999999",
     "economicNumber": "512561254",
     "vim": "WAUDH98E36A1439",
-    "seats": 20,
+    "seats": 18,
     "insurance": "Conn-Kuhic",
     "insuranceNumber": "2215",
     "brand": "Kia",
