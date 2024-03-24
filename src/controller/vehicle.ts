@@ -39,7 +39,7 @@ const validateRequiredFields = async (req: any, id: string) => {
     (field) => req[field] && req[field] !== ""
   );
 
-  console.log(uniqueFieldsModified)
+  console.log(uniqueFieldsModified);
   if (uniqueFieldsModified.length === 0) {
     // Si no se han modificado los campos únicos, omitir la validación
     return { valid: true };
@@ -61,21 +61,6 @@ const validateRequiredFields = async (req: any, id: string) => {
 
   // Si pasa todas las validaciones, el vehículo es válido
   return { valid: true };
-  // // Verificar si los campos únicos ya existen en la base de datos
-  // for (const field of uniqueFields) {
-  //         // Construir la consulta para buscar un vehículo con el campo único proporcionado
-  //     const query = { [field]: req[field] };
-  //     if (id !== "") {
-  //       query._id = { $ne: id };
-  //     }
-  //     // Buscar un vehículo con el campo único en la base de datos
-  //     const vehicleFound = await Vehicle.findOne(query);
-  //     if (vehicleFound) {
-  //       return { valid: false, message: `The ${field} already exists` };
-  //     }
-  //   }
-  //   // Si pasa todas las validaciones, el vehículo es válido
-  // return { valid: true };
 };
 
 /**
@@ -193,13 +178,7 @@ export const getVehicle: RequestHandler = async (req, res) => {
   return res.json(vehicleFound);
 };
 
-/**
- * Elimina un vehículo por su ID, actualizando su estado 'alive' a falso.
- * @param req El objeto de solicitud HTTP que contiene el ID del vehículo a eliminar.
- * @param res El objeto de respuesta HTTP que se utilizará para enviar la confirmación de eliminación.
- * @returns Un objeto JSON que contiene el vehículo eliminado o un mensaje de error si el vehículo no está disponible.
- */
-export const deleteVehicle: RequestHandler = async (req, res) => {
+export const disabledVehicle: RequestHandler = async (req, res) => {
   // Buscar y actualizar el vehículo para establecer su estado 'alive' a falso
   const vehicleFound = await Vehicle.findByIdAndUpdate(
     req.params.id,
@@ -271,5 +250,26 @@ export const getTrackigByVehicle: RequestHandler = async (req, res) => {
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+/**
+ * Elimina un vehículo por su ID, actualizando su estado 'alive' a falso.
+ * @param req El objeto de solicitud HTTP que contiene el ID del vehículo a eliminar.
+ * @param res El objeto de respuesta HTTP que se utilizará para enviar la confirmación de eliminación.
+ * @returns Un objeto JSON que contiene el vehículo eliminado o un mensaje de error si el vehículo no está disponible.
+ */
+export const deleteVehicle: RequestHandler = async (req, res) => {
+  try {
+    // Buscar y actualizar el vehículo para establecer su estado 'alive' a falso
+    const vehicleFound = await Vehicle.findByIdAndDelete(req.params.id);
+    if (!vehicleFound) {
+      return res.status(204).json({ message: "Vehicle not found" });
+    }
+    return res.status(200).json({ vehicleFound, message: "Vehicle Deleted" });
+  } catch (error: any) {
+    return res
+      .status(500)
+      .json({ message: "Error deleting vehicle", error: error.message });
   }
 };

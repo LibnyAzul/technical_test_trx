@@ -80,3 +80,6 @@ POST {{api}}/vehicle/search/seats/32
 
 ###
 GET {{api}}/vehicle/tracking/65f89495d7a31a44ce738039
+
+###
+DELETE  {{api}}/vehicle/65f78b8a5ed2ffd1c4b6d763
