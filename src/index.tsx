@@ -3,10 +3,11 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import VehicleList from "./vehicle/VehicleList";
+import List from "./vehicle/list";
 import AddOrEdit from "./vehicle/AddOrEdit";
-import ViewVehicle from "./vehicle/ViewVehicle";
+import View from "./vehicle/view";
 import Layout from "./components/layout";
+import MapView from "./vehicle/MapView";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -16,10 +17,11 @@ root.render(
     <BrowserRouter>
         <Routes>
           <Route element={<Layout />}>
-            <Route path="/" element={<VehicleList />} />
+            <Route path="/" element={<List />} />
             <Route path="/vehicle/new-vehicle" element={<AddOrEdit />} />
-            <Route path="/vehicle/details/:id" element={<ViewVehicle />} />
+            <Route path="/vehicle/details/:id" element={<View />} />
             <Route path="/vehicle/edit/:id" element={<AddOrEdit />} />
+            <Route path="/vehicle/map/:id" element={<MapView />} />
           </Route>
         </Routes>
       </BrowserRouter>

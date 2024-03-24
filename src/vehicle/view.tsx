@@ -13,7 +13,12 @@ import { IVehicle, iVehicle } from "../components/models/vehicle";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import { green, red } from "@mui/material/colors";
-import * as VehicleService from "../services/vehicle";
+import CustomAlerts, {
+  ICustomAlerts,
+  initialState as iCustomAlerts,
+} from "../components/alert";
+import _ from "lodash";
+import { GetVehicleById } from "../services/vehicle";
 
 const formatDate = (dateString: string | Date | undefined) => {
   if (!dateString) return "";
@@ -26,25 +31,35 @@ const formatDate = (dateString: string | Date | undefined) => {
   return formattedDate;
 };
 
-const ViewVehicle = () => {
+const View = () => {
   const navigate = useNavigate();
   const [vehicle, setVehicle] = useState<IVehicle>(iVehicle);
+  const [alert, setAlert] = useState<ICustomAlerts>(iCustomAlerts);
   const [loading, setLoading] = useState<boolean>(false);
   const { id } = useParams();
 
-  const getVehicle = async (id: string): Promise<any> => {
-    setLoading(true);
-    await VehicleService.getVehicle(id).then((data: any) => {
-      if (data.data !== undefined) {
-        setVehicle(data.data);
+  const loadEntity = async (id: string) => {
+    await GetVehicleById(String(id)).then((data: IVehicle | any) => {
+      if (!_.isNil(data) && data !== "" && "plate" in data) {
+        setVehicle(data);
+      } else {
+        setAlert({
+          ...alert,
+          open: true,
+          alert: {
+            type: "error",
+            message: "Error al buscar el vehiculo seleccionado",
+          },
+        });
       }
-      setLoading(false);
     });
   };
 
+  const handleCloseAlert = () => setAlert(iCustomAlerts);
+
   useEffect(() => {
     if (id) {
-      getVehicle(id);
+      loadEntity(id);
     }
   }, [id]);
 
@@ -222,8 +237,9 @@ const ViewVehicle = () => {
           </Grid>
         </CardContent>
       </Card>
+      <CustomAlerts params={alert} closeAlert={handleCloseAlert} />
     </Box>
   );
 };
 
-export default ViewVehicle;
+export default View;

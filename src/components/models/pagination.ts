@@ -1,3 +1,4 @@
+import { Dayjs } from "dayjs";
 import { ITracking } from "./tracking";
 import { IVehicle } from "./vehicle";
 
@@ -21,7 +22,7 @@ import { IVehicle } from "./vehicle";
  *
  */
 export interface IFilter {
-    column: string;
+    column: string | Dayjs | null;
     filter: string;
     value?: boolean | string | number | null;
   }

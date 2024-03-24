@@ -8,6 +8,8 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import MapIcon from "@mui/icons-material/Map";
+import BackupIcon from "@mui/icons-material/Backup";
 import { green, red, lightBlue } from "@mui/material/colors";
 import { ITracking } from "./tracking";
 
@@ -162,6 +164,28 @@ export const GenerateColumns = (navigate: any, ChangeAlive: any): any => {
           onPointerEnterCapture={() => {}}
           onPointerLeaveCapture={() => {}}
           showInMenu={false}
+          sx={{ display: !params.row.alive ? "none" : "block" }}
+        />,
+        <GridActionsCellItem
+          key={`${params.id}-2`}
+          icon={<MapIcon sx={{ color: lightBlue[400] }} />}
+          label="Mapa"
+          onClick={() => navigate(`/vehicle/map/${params.id}`)}
+          placeholder=""
+          onPointerEnterCapture={() => {}}
+          onPointerLeaveCapture={() => {}}
+          showInMenu={false}
+        />,
+        <GridActionsCellItem
+          key={`${params.id}-3`}
+          icon={<BackupIcon sx={{ color: lightBlue[400] }} />}
+          label="Importación"
+          onClick={() => navigate(`/vehicle/imposrt/${params.id}`)}
+          placeholder=""
+          onPointerEnterCapture={() => {}}
+          onPointerLeaveCapture={() => {}}
+          showInMenu={false}
+          sx={{ display: !params.row.alive ? "none" : "block" }}
         />,
       ],
     },

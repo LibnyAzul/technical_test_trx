@@ -1,37 +1,56 @@
 import axios, { AxiosResponse } from "axios";
 import { ITracking } from "../components/models/tracking";
+import IPagination from "../components/models/pagination";
 
-export const createTracking = async (tracking: ITracking) => {
-  return await axios.post(`${process.env.API}/tracking`, tracking);
-};
+const API: string = process.env.REACT_APP_API!;
 
-export const List = async (data: any): Promise<AxiosResponse | any> => {
+export const Save = async (
+  tracking: ITracking | any
+): Promise<AxiosResponse | any> => {
+  const URL: string = `${API}/tracking`;
+  const method = "post";
   try {
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    if (!axios?.defaults?.headers?.common.Authorization) {
-      throw new Error("Bearer token no configurado");
-    }
-    const response: AxiosResponse = await axios.post(
-      `${process.env.API}/tracking`,
-      data
-    );
+    const response: AxiosResponse = await axios[method](URL, tracking);
     return response.data;
-  } catch (err) {
-    // TODO: Manejo de errores
-    return ("Error Interno, por favor intente nuevamente");
+  } catch (err: any) {
+    return err?.response?.data;
   }
 };
 
-export const getTracking = async (id: string) => {
-  return await axios.get<ITracking>(`${process.env.API}/tracking/${id}`);
+export const GetById = async (id: string): Promise<AxiosResponse | any> => {
+  const URL: string = `${API}/tracking/${id}`;
+  const method = "get";
+  try {
+    const response: AxiosResponse = await axios[method](URL);
+    return response.data;
+  } catch (err: any) {
+    return err?.response?.data;
+  }
 };
 
-export const deleteVehicle = async (id: string) => {
-  return await axios.delete<ITracking>(`${process.env.API}/tracking/${id}`);
+export const Delete = async (
+  id: string
+): Promise<AxiosResponse | any> => {
+  const URL: string = `${API}/tracking/${id}`;
+  const method = "delete";
+  try {
+    const response: AxiosResponse = await axios[method](URL);
+    return response.data;
+  } catch (err: any) {
+    return err?.response?.data;
+  }
 };
 
-export const trackingByDate = async (vehicleId: string) => {
-  return await axios.post<ITracking>(
-    `${process.env.API}/tracking/vehicle/${vehicleId}`
-  );
+export const findByIdAndFilters = async (
+  vehicleId: string,
+  pagination: IPagination
+): Promise<AxiosResponse | any> => {
+  const URL: string = `${API}/tracking/vehicle/${vehicleId}`;
+  const method = "post";
+  try {
+    const response: AxiosResponse = await axios[method](URL, pagination);
+    return response.data;
+  } catch (err: any) {
+    return err?.response?.data;
+  }
 };

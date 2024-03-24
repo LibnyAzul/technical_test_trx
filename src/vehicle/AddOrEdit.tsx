@@ -7,64 +7,77 @@ import {
   CardHeader,
   Fab,
   Grid,
-  Snackbar,
   TextField,
 } from "@mui/material";
-import Alert, { AlertColor } from "@mui/material/Alert";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { IVehicle, iVehicle } from "../components/models/vehicle";
-import * as VehicleService from "../services/vehicle";
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
+import CustomAlerts, {
+  ICustomAlerts,
+  initialState as iCustomAlerts,
+} from "../components/alert";
+import { GetVehicleById, SaveVehicle } from "../services/vehicle";
+import _ from "lodash";
 
 const AddOrEdit = () => {
   const navigate = useNavigate();
   const params = useParams();
   const [vehicle, setVehicle] = useState<IVehicle>(iVehicle);
-
-  const [typeAlert, setTypeAlert] = useState<AlertColor>();
-  const [showAlert, setShowAlert] = useState(false);
-  const [textAlert, setTextAlert] = useState("");
+  const [alert, setAlert] = useState<ICustomAlerts>(iCustomAlerts);
 
   const isUpdate = "id" in params;
 
-  const getVehicle = async (id: string) => {
-    const res = await VehicleService.getVehicle(id);
-    const datas: IVehicle = res.data;
-    setVehicle(datas);
+  const loadEntity = async (id: string) => {
+    await GetVehicleById(String(params.id)).then((data: IVehicle | any) => {
+      if (!_.isNil(data) && data !== "" && "plate" in data) {
+        setVehicle(data);
+      } else {
+        setAlert({
+          ...alert,
+          open: true,
+          alert: {
+            type: "error",
+            message: "Error al buscar el vehiculo seleccionado",
+          },
+        });
+      }
+    });
   };
 
   useEffect(() => {
     if (params && params.id) {
-      getVehicle(params.id);
+      loadEntity(params.id);
     }
   }, [params]);
 
   const handleSave = async () => {
-    let message: string = 'Ocurrio un incidente inesperado!';
+    let message: string = "Ocurrio un incidente inesperado!";
     let isSaveOrUpdate: boolean = false;
 
-    if (isUpdate) {
-      await VehicleService.updateVehicle(params.id ?? '', vehicle).then((data: any) => {
-        isSaveOrUpdate = data.response.status === 200;
-        message = data.response.data.message;
-        console.log(data.response.data);
-      });
-    } else {
-      await VehicleService.createVehicle(vehicle).then((data: any) => {
-        isSaveOrUpdate = data.response.status === 200;
-        message = data.response.data.message;
-      });
-    }
-    
-    setTextAlert(message);
-    setTypeAlert(isSaveOrUpdate ? "success" : "error");
-    setShowAlert(true);
+    await SaveVehicle(vehicle).then((data: any) => {
+      isSaveOrUpdate = "savedVehicle" in data;
+      message = "message" in data ? data.message : "Error inesperado!";
+    });
+
+    setAlert({
+      ...alert,
+      open: true,
+      alert: {
+        type: isSaveOrUpdate ? "success" : "error",
+        message,
+      },
+    });
 
     setTimeout(() => {
-      if (isSaveOrUpdate) navigate("/");
+      if (isSaveOrUpdate) {
+        setVehicle(iVehicle);
+        navigate("/");
+      }
     }, 1000);
   };
+
+  const handleCloseAlert = () => setAlert(iCustomAlerts);
 
   return (
     <Box>
@@ -74,14 +87,14 @@ const AddOrEdit = () => {
             <Fab
               color="primary"
               size="small"
-              aria-label="add"
+              aria-label="home"
               onClick={() => navigate("/")}
             >
               <FormatListNumberedIcon />
             </Fab>
           }
           id="title"
-          title={(isUpdate ? "Editar" : "Agregar") + " Vehìculo"}
+          title={(isUpdate ? "Editar" : "Agregar") + " Vehículo"}
         />
         <CardContent
           component="form"
@@ -266,27 +279,7 @@ const AddOrEdit = () => {
           </Button>
         </CardActions>
       </Card>
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        open={showAlert}
-        autoHideDuration={6000}
-        onClose={() => setShowAlert(false)}
-      >
-        <Alert
-          onClose={() => setShowAlert(false)}
-          severity={typeAlert}
-          variant="filled"
-          sx={{ width: "100%" }}
-        >
-          {textAlert}
-        </Alert>
-      </Snackbar>
-      {/* <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        open={showAlert}
-        onClose={() => setShowAlert(false)}
-        message={`${textAlert}`}
-      /> */}
+      <CustomAlerts params={alert} closeAlert={handleCloseAlert} />
     </Box>
   );
 };

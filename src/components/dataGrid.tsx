@@ -58,8 +58,6 @@ const TestDataGrid: FC<TestDataGridProps> = (props: TestDataGridProps) => {
         ? true
         : props.isPopover
       : false;
-  //   const type: string =
-  //     props.type !== undefined ? (props.type === null ? '' : props.type) : '';
   const size: number = !_.isNil(props.size) ? props.size : 0.8;
 
   /** Function used to obtain screen size */
@@ -308,79 +306,6 @@ const TestDataGrid: FC<TestDataGridProps> = (props: TestDataGridProps) => {
     setAnchorEl(null);
   };
 
-  /** Custom Grid Tool Bar for Custom Exports */
-  // const getJson = (apiRef: MutableRefObject<GridApi>): string => {
-  //   // Select rows and columns
-  //   const filteredSortedRowIds = gridFilteredSortedRowIdsSelector(apiRef);
-  //   const visibleColumnsField = gridVisibleColumnFieldsSelector(apiRef);
-
-  //   // Format the data. Here we only keep the value
-  //   const data = filteredSortedRowIds.map((id) => {
-  //     const row: Record<string, any> = {};
-  //     visibleColumnsField.forEach((field) => {
-  //       row[field] = apiRef.current.getCellParams(id, field).value;
-  //     });
-  //     return row;
-  //   });
-
-    // Stringify with some indentation
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#parameters
-  //   console.log("data:_ ", data);
-  //   return JSON.stringify(data, null, 2);
-  // };
-
-  // const exportBlob = (blob: Blob, fileName: string): void => {
-  //   // Save the blob in a json file
-  //   const url = URL.createObjectURL(blob);
-
-  //   const a = document.createElement("a");
-  //   a.href = url;
-  //   a.download = fileName;
-  //   a.click();
-
-  //   setTimeout(() => {
-  //     URL.revokeObjectURL(url);
-  //   });
-  // };
-
-  // const JsonExportMenuItem: FC<GridExportMenuItemProps<{}>> = (
-  //   props: GridExportMenuItemProps<{}>
-  // ) => {
-  //   const apiRef = useGridApiContext();
-  //   const { hideMenu } = props;
-  //   return (
-  //     <MenuItem
-  //       onClick={() => {
-  //         const jsonString = getJson(apiRef);
-  //         const blob = new Blob([jsonString], {
-  //           type: "text/json",
-  //         });
-  //         exportBlob(blob, "Portal_OE.json");
-
-  //         // Hide the export menu after the export
-  //         hideMenu?.();
-  //       }}
-  //     >
-  //       {"Exportar Json"}
-  //     </MenuItem>
-  //   );
-  // };
-
-  // const CustomExportButtons: FC<ButtonProps> = (props: ButtonProps) => (
-  //   <GridToolbarExportContainer placeholder={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} {...props}>
-  //     <GridCsvExportMenuItem {...props} />
-  //     <GridPrintExportMenuItem {...props} />
-  //     <JsonExportMenuItem />
-  //   </GridToolbarExportContainer>
-  // );
-  //   const CustomExportButtons = (props: ButtonProps) => (
-  //     <GridToolbarExportContainer {...props}>
-  //       <GridCsvExportMenuItem {...props} />
-  //       <GridPrintExportMenuItem {...props} />
-  //       <JsonExportMenuItem />
-  //     </GridToolbarExportContainer>
-  //   );
-
   const CustomToolBar: FC<GridToolbarContainerProps> = (
     props: GridToolbarContainerProps
   ) => (
@@ -391,15 +316,6 @@ const TestDataGrid: FC<TestDataGridProps> = (props: TestDataGridProps) => {
       <CustomExportButtons /> */}
     </GridToolbarContainer>
   );
-  //   const CustomToolBar = (props: GridToolbarContainerProps) => (
-  //     <GridToolbarContainer {...props}>
-  //       <GridToolbarColumnsButton />
-  //       <GridToolbarFilterButton />
-  //       <GridToolbarDensitySelector />
-  //       <CustomExportButtons />
-  //     </GridToolbarContainer>
-  //   );
-  /** End */
 
   useEffect(() => {
     /** This code is implemented to detect the size in pixels of the screen, to be able to set them in the table component (it does not take percentages). */
