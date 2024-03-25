@@ -49,3 +49,20 @@ Content-Type: application/json
         }
     ]
 }
+
+###
+POST {{api}}/tracking/saveAll/6600ff641f08354136659a10
+Content-Type: application/json
+
+[
+    {
+        "latitude": "20.105743",
+        "longitude": "-102.974921",
+        "createdAt": "2024-03-23T19:50:31.007"
+    },
+    {
+        "latitude": "20.905743",
+        "longitude": "-103.974921",
+        "createdAt": "2024-03-23T19:50:33.007"
+    }
+]

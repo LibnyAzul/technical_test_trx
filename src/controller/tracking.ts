@@ -1,6 +1,7 @@
 import { RequestHandler } from "express-serve-static-core";
 import Tracking, { ITrackingDocument } from "../entity/tracking";
 import Vehicle from "../entity/vehicle";
+import moment from "moment-timezone";
 
 export const createTracking: RequestHandler = async (req, res) => {
   try {
@@ -9,22 +10,28 @@ export const createTracking: RequestHandler = async (req, res) => {
       return res.status(404).json({ message: "Vehículo no encontrado" });
     }
 
+    const currentDate: Date = new Date();
+
     const tracking = new Tracking({
       latitude: req.body.latitude,
       longitude: req.body.longitude,
+      createdAt: currentDate.setHours(currentDate.getHours() - 6),
+      updatedAt: currentDate.setHours(currentDate.getHours() - 6),
     });
 
     await tracking.save();
 
     vehicle.tracking.push(tracking.id);
     await vehicle.save();
-    return res
-      .status(201)
-      .json({ message: "Las coordenadas se han guardado correctamente", tracking });
+    return res.status(201).json({
+      message: "Las coordenadas se han guardado correctamente",
+      tracking,
+    });
   } catch (error: any) {
-    return res
-      .status(500)
-      .json({ message: "Error al crear las coordenadas", error: error.message });
+    return res.status(500).json({
+      message: "Error al crear las coordenadas",
+      error: error.message,
+    });
   }
 };
 
@@ -33,7 +40,9 @@ export const deleteTracking: RequestHandler = async (req, res) => {
   if (!trackingFaund) {
     return res.status(204).json({ message: "Coordenadas no encontradas" });
   }
-  return res.status(200).json({ trackingFaund, message: "Coordenadas eliminadas" });
+  return res
+    .status(200)
+    .json({ trackingFaund, message: "Coordenadas eliminadas" });
 };
 
 export const getTracking: RequestHandler = async (req, res) => {
@@ -43,7 +52,6 @@ export const getTracking: RequestHandler = async (req, res) => {
   }
   return res.status(200).json({ trackingFaund, message: "OK" });
 };
-
 
 export const trackingByDate: RequestHandler = async (req, res) => {
   try {
@@ -138,41 +146,54 @@ export const saveAll: RequestHandler = async (req, res) => {
     const trackings = req.body; // Cast body to Tracking[]
 
     // Validate trackings
-    const validTrackings = trackings.filter((tracking: { latitude: any; longitude: any; }) => {
-      if (!tracking.latitude || !tracking.longitude) {
-        return false; // Missing required properties
+    const validTrackings = trackings.filter(
+      (tracking: { latitude: any; longitude: any }) => {
+        if (!tracking.latitude || !tracking.longitude) {
+          return false; // Missing required properties
+        }
+        return true;
       }
-      return true;
-    });
+    );
 
     if (validTrackings.length === 0) {
-      return res.status(400).json({ message: "No se proporcionaron datos validos" });
+      return res
+        .status(400)
+        .json({ message: "No se proporcionaron datos validos" });
     }
 
     // Create and save trackings
     const savedTrackings = await Promise.all(
-      validTrackings.map(async (tracking: { latitude: any; longitude: any; createdAt: string | number | Date; }) => {
-        const newTracking = new Tracking({
-          latitude: tracking.latitude,
-          longitude: tracking.longitude,
-          createdAt: tracking.createdAt ? new Date(tracking.createdAt) : undefined, // Set createDate if provided 
-        });
-        await newTracking.save();
-        return newTracking;
-      })
+      validTrackings.map(
+        async (tracking: {
+          latitude: any;
+          longitude: any;
+          createdAt: string | number | Date;
+        }) => {
+          const currentDate: Date = tracking.createdAt ? new Date(tracking.createdAt) : new Date();
+          const newTracking = new Tracking({
+            latitude: tracking.latitude,
+            longitude: tracking.longitude,
+            createdAt: currentDate.setHours(currentDate.getHours() - 6),
+            updatedAt: currentDate.setHours(currentDate.getHours() - 6),
+          });
+          await newTracking.save();
+          return newTracking;
+        }
+      )
     );
 
     // Update vehicle with saved tracking IDs
     vehicle.tracking.push(...savedTrackings.map((t) => t._id));
     await vehicle.save();
 
-    return res
-      .status(201)
-      .json({ message: "Coordenas creadas correctamente", trackings: savedTrackings });
+    return res.status(201).json({
+      message: "Coordenas creadas correctamente",
+      trackings: savedTrackings,
+    });
   } catch (error: any) {
-    return res
-      .status(500)
-      .json({ message: "Error al crear las coordenadas", error: error.message });
+    return res.status(500).json({
+      message: "Error al crear las coordenadas",
+      error: error.message,
+    });
   }
 };
-
