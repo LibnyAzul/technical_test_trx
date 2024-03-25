@@ -3,6 +3,19 @@ import _ from "lodash";
 import Vehicle from "../entity/vehicle";
 import Tracking from "../entity/tracking";
 
+const fieldTranslations: any = {
+  plate: "Placas",
+  economicNumber: "Número Económico",
+  vim: "VIM",
+  seats: "Asientos",
+  insurance: "Aseguradora",
+  insuranceNumber: "Número de Aseguradora",
+  brand: "Marca",
+  model: "Modelo",
+  year: "Año",
+  color: "Color",
+};
+
 /**
  * Valida los campos requeridos y únicos para un vehículo.
  * @param req Los datos de la solicitud que contienen los campos del vehículo.
@@ -27,7 +40,8 @@ const validateRequiredFields = async (req: any, id: string) => {
   // Verificar si los campos requeridos están presentes y no son nulos ni vacíos
   for (const field of requiredFields) {
     if (!req[field] || _.isNil(req[field]) || req[field] === "") {
-      return { valid: false, message: `The '${field}' field is required` };
+      const fieldName = fieldTranslations[field] || field;
+      return { valid: false, message: `El Campo '${fieldName}' es requerido` };
     }
   }
 
@@ -55,7 +69,7 @@ const validateRequiredFields = async (req: any, id: string) => {
     // Buscar un vehículo con el campo único en la base de datos
     const vehicleFound = await Vehicle.findOne(query);
     if (vehicleFound) {
-      return { valid: false, message: `The ${field} already exists` };
+      return { valid: false, message: `El campo ${field} ya existe` };
     }
   }
 
@@ -74,7 +88,7 @@ export const createVehicle: RequestHandler = async (req, res) => {
     // Verificar si ya existe un vehículo con la placa proporcionada
     const vehicleFound = await Vehicle.findOne({ plate: req.body.plate });
     if (vehicleFound) {
-      return res.status(302).json({ message: "The plate already exists" });
+      return res.status(302).json({ message: "El número de placa ya existe" });
     }
 
     // Validar si los campos requeridos están presentes y no son nulos ni vacíos
@@ -86,12 +100,14 @@ export const createVehicle: RequestHandler = async (req, res) => {
     // Crear el vehículo si todos los campos requeridos están presentes y válidos
     const vehicle = new Vehicle(req.body);
     const savedVehicle = await vehicle.save();
-    res.status(200).json({ savedVehicle, message: "Vehicle Saved" });
+    res
+      .status(200)
+      .json({ savedVehicle, message: "Vehículo Guardado Correctamente" });
   } catch (error: any) {
     // Manejar cualquier error que ocurra durante la creación del vehículo
     res
       .status(500)
-      .json({ message: "Error creating vehicle", error: error.message });
+      .json({ message: "Error al crear el vehículo", error: error.message });
   }
 };
 
@@ -104,26 +120,54 @@ export const createVehicle: RequestHandler = async (req, res) => {
 export const getVehicles: RequestHandler = async (req, res) => {
   const { objectsPerPage, page, filters } = req.body;
 
-  // Construir objeto de consulta dinámico basado en los filtros
+  // Construir objeto de consulta dinámico basado en los filtros y ordenamiento
   const query: any = {};
+  let sort: any = {};
+
   if (filters && filters.length > 0) {
     filters.forEach((filter: any) => {
       switch (filter.filter) {
         case "startWith":
-          // filter.field Like 'filter.value%'
-          query[filter.field] = { $regex: `^${filter.value}`, $options: "i" };
+        case "startsWith":
+          // filter.column Like 'filter.value%'
+          query[filter.column] = { $regex: `^${filter.value}`, $options: "i" };
           break;
         case "endWith":
-          query[filter.field] = { $regex: `${filter.value}^`, $options: "i" };
+        case "endsWith":
+          query[filter.column] = { $regex: `${filter.value}^`, $options: "i" };
           break;
         case "contains":
-          query[filter.field] = {
+          query[filter.column] = {
             $regex: `.*${filter.value}.*`,
             $options: "i",
           };
           break;
         case "equals":
-          query[filter.field] = filter.value;
+        case "=":
+        case "exact":
+        case "is":
+          query[filter.column] = filter.value;
+          break;
+        case ">":
+        case "gt":
+          query[filter.column] = { $gt: filter.value };
+          break;
+        case ">=":
+        case "gte":
+          query[filter.column] = { $gte: filter.value };
+          break;
+        case "!=":
+        case "distinct":
+          query[filter.column] = { $ne: filter.value };
+          break;
+        case "isAnyOf":
+          query[filter.column] = { $in: filter.value };
+          break;
+        case "isEmpty":
+          query[filter.column] = { $exists: false };
+          break;
+        case "orderBy":
+          sort[filter.column] = filter.value === "asc" ? 1 : -1;
           break;
         default:
           // Manejar filtro no reconocido
@@ -135,12 +179,13 @@ export const getVehicles: RequestHandler = async (req, res) => {
   // Contar total de registros a partir de los filtros
   const total = await Vehicle.countDocuments(query);
 
-  // Aplicar paginación
+  // Aplicar paginación y ordenamiento
   const skip = (page - 1) * objectsPerPage;
 
-  // se aplica la paginación, usando los filtros, pagina actual y los objetos por pagina
+  // Se aplica la paginación y ordenamiento
   const vehicles = await Vehicle.find(query)
     .select("-tracking")
+    .sort(sort)
     .skip(skip)
     .limit(objectsPerPage);
 
@@ -172,9 +217,8 @@ export const getVehicle: RequestHandler = async (req, res) => {
   // Buscar un vehículo por su ID en la base de datos
   const vehicleFound = await Vehicle.findById(req.params.id);
   if (!vehicleFound) {
-    return res.status(204).json({ message: "vehicle not found" });
+    return res.status(204).json({ message: "Vehículo no encontrado" });
   }
-  // Manejar cualquier error que ocurra durante la búsqueda del vehículo
   return res.json(vehicleFound);
 };
 
@@ -186,13 +230,15 @@ export const disabledVehicle: RequestHandler = async (req, res) => {
     { new: true }
   );
   if (!vehicleFound) {
-    return res.status(204).json({ message: "Vehicle not found" });
+    return res.status(204).json({ message: "Vehículo no encontrado" });
   }
   vehicleFound.alive = req.body.alive;
   await vehicleFound.save();
+  const message = vehicleFound.alive ? "habilitado" : "deshabilitado";
+
   return res
     .status(200)
-    .json({ vehicleFound, message: `Vehicle status set to ${req.body.alive}` });
+    .json({ vehicleFound, message: `Vehiculo ${message} correctamente` });
 };
 
 /**
@@ -218,16 +264,17 @@ export const updateVehicle: RequestHandler = async (req, res) => {
 
     // Verificar si el vehículo fue encontrado y actualizado
     if (!vehicleUpdate) {
-      return res.status(404).json({ message: "Vehicle not found" });
+      return res.status(404).json({ message: "Vehículo no encontrado" });
     }
 
     // Devolver el vehículo actualizado
     res.json(vehicleUpdate);
   } catch (error: any) {
     // Manejar cualquier error que ocurra durante la actualización del vehículo
-    res
-      .status(500)
-      .json({ message: "Error updating vehicle", error: error.message });
+    res.status(500).json({
+      message: "Error al actualizar el vehículo",
+      error: error.message,
+    });
   }
 };
 
@@ -236,7 +283,7 @@ export const getTrackigByVehicle: RequestHandler = async (req, res) => {
     // Busca el vehículo por su ID
     const vehicle = await Vehicle.findById(req.params.vehicleId);
     if (!vehicle) {
-      return res.status(404).json({ message: "Vehicle not found" });
+      return res.status(404).json({ message: "Vehículo no encontrado" });
     }
 
     // Obtiene la lista de IDs de trackings asociados a ese vehículo
@@ -248,7 +295,6 @@ export const getTrackigByVehicle: RequestHandler = async (req, res) => {
     // Retorna los trackings encontrados
     res.json(trackings);
   } catch (error) {
-    console.error("Error:", error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -264,9 +310,11 @@ export const deleteVehicle: RequestHandler = async (req, res) => {
     // Buscar y actualizar el vehículo para establecer su estado 'alive' a falso
     const vehicleFound = await Vehicle.findByIdAndDelete(req.params.id);
     if (!vehicleFound) {
-      return res.status(204).json({ message: "Vehicle not found" });
+      return res.status(204).json({ message: "Vehículo no encontrado" });
     }
-    return res.status(200).json({ vehicleFound, message: "Vehicle Deleted" });
+    return res
+      .status(200)
+      .json({ vehicleFound, message: "Vehículo eliminado correctamente" });
   } catch (error: any) {
     return res
       .status(500)

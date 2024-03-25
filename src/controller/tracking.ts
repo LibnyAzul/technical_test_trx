@@ -6,7 +6,7 @@ export const createTracking: RequestHandler = async (req, res) => {
   try {
     const vehicle = await Vehicle.findById(req.body.vehicleId);
     if (!vehicle) {
-      return res.status(404).json({ message: "Vehicle not found" });
+      return res.status(404).json({ message: "Vehículo no encontrado" });
     }
 
     const tracking = new Tracking({
@@ -20,29 +20,30 @@ export const createTracking: RequestHandler = async (req, res) => {
     await vehicle.save();
     return res
       .status(201)
-      .json({ message: "Tracking created successfully", tracking });
+      .json({ message: "Las coordenadas se han guardado correctamente", tracking });
   } catch (error: any) {
     return res
       .status(500)
-      .json({ message: "Error creating tracking", error: error.message });
+      .json({ message: "Error al crear las coordenadas", error: error.message });
   }
 };
 
 export const deleteTracking: RequestHandler = async (req, res) => {
   const trackingFaund = await Tracking.findByIdAndDelete(req.params.id);
   if (!trackingFaund) {
-    return res.status(204).json({ message: "Tracking not found" });
+    return res.status(204).json({ message: "Coordenadas no encontradas" });
   }
-  return res.status(200).json({ trackingFaund, message: "Tracking Deleted" });
+  return res.status(200).json({ trackingFaund, message: "Coordenadas eliminadas" });
 };
 
 export const getTracking: RequestHandler = async (req, res) => {
   const trackingFaund = await Tracking.findById(req.params.id);
   if (!trackingFaund) {
-    return res.status(204).json({ message: "Tracking not found" });
+    return res.status(204).json({ message: "Coordenadas no encontradas" });
   }
   return res.status(200).json({ trackingFaund, message: "OK" });
 };
+
 
 export const trackingByDate: RequestHandler = async (req, res) => {
   try {
@@ -52,7 +53,7 @@ export const trackingByDate: RequestHandler = async (req, res) => {
     const vehicle = await Vehicle.findById(vehicleId);
 
     if (!vehicle) {
-      return res.status(404).json({ message: "Vehicle not found" });
+      return res.status(404).json({ message: "Vehículo no encontrado" });
     }
 
     let query: any = { _id: { $in: vehicle.tracking } };
@@ -119,7 +120,7 @@ export const trackingByDate: RequestHandler = async (req, res) => {
     });
   } catch (error: any) {
     res.status(500).json({
-      message: "Error searching trackings by date",
+      message: "Error al buscar las coodenadas por decha",
       error: error.message,
     });
   }
@@ -131,7 +132,7 @@ export const saveAll: RequestHandler = async (req, res) => {
 
     const vehicle = await Vehicle.findById(vehicleId);
     if (!vehicle) {
-      return res.status(404).json({ message: "Vehicle not found" });
+      return res.status(404).json({ message: "Vehículo no encontrado" });
     }
 
     const trackings = req.body; // Cast body to Tracking[]
@@ -145,7 +146,7 @@ export const saveAll: RequestHandler = async (req, res) => {
     });
 
     if (validTrackings.length === 0) {
-      return res.status(400).json({ message: "No valid trackings provided" });
+      return res.status(400).json({ message: "No se proporcionaron datos validos" });
     }
 
     // Create and save trackings
@@ -167,11 +168,11 @@ export const saveAll: RequestHandler = async (req, res) => {
 
     return res
       .status(201)
-      .json({ message: "Trackings created successfully", trackings: savedTrackings });
+      .json({ message: "Coordenas creadas correctamente", trackings: savedTrackings });
   } catch (error: any) {
     return res
       .status(500)
-      .json({ message: "Error creating trackings", error: error.message });
+      .json({ message: "Error al crear las coordenadas", error: error.message });
   }
 };
 

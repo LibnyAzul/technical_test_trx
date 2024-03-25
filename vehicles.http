@@ -83,3 +83,24 @@ GET {{api}}/vehicle/tracking/65f89495d7a31a44ce738039
 
 ###
 DELETE  {{api}}/vehicle/65f78b8a5ed2ffd1c4b6d763
+
+###
+POST {{api}}/vehicle
+Content-Type: application/json
+
+{
+    "objectsPerPage": 25,
+    "page": 1,
+    "maxPage": 1,
+    "previousPage": 1,
+    "nextPage": 1,
+    "total": 10,
+    "filters": [
+        {
+            "column": "plate",
+            "filter": "contains",
+            "value": "123"
+        }
+    ],
+    "list": []
+}
