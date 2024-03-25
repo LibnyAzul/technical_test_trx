@@ -104,3 +104,13 @@ Content-Type: application/json
     ],
     "list": []
 }
+
+###
+POST https://tech-test-backend.vercel.app:3000/vehicle
+Content-Type: application/json
+
+{
+    "filters": [],
+    "objectsPerPage": 5,
+    "page": 1
+}
