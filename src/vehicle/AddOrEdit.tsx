@@ -66,7 +66,7 @@ const AddOrEdit = () => {
         "message" in data
           ? data.message
           : isSaveOrUpdate
-          ? "Vehicle Update"
+          ? "Vehículo actualizado"
           : "Error inesperado!";
     });
 

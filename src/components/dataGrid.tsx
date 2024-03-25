@@ -234,8 +234,8 @@ const TestDataGrid: FC<TestDataGridProps> = (props: TestDataGridProps) => {
         <NativeSelect
           defaultValue={pagination.objectsPerPage}
           onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-            console.log("Event: ", e.target.value);
             pagination.objectsPerPage = parseInt(e.target.value);
+            pagination.page = 1;
             props.setObjectForPagination(pagination);
             props.getList();
           }}

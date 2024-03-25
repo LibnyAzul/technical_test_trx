@@ -8,7 +8,6 @@ import {
   Fab,
   Grid,
 } from "@mui/material";
-import * as VehicleService from "../services/vehicle";
 import { useNavigate } from "react-router-dom";
 import IPagination, { iPagination } from "../components/models/pagination";
 import { GenerateColumns, IVehicle } from "../components/models/vehicle";
@@ -20,6 +19,12 @@ import CustomAlerts, {
 } from "../components/alert";
 import Modal from "@mui/material/Modal";
 import { grey } from "@mui/material/colors";
+import {
+  DeletedVehicle,
+  DisabledVehicle,
+  findByPagination,
+} from "../services/vehicle";
+import _ from "lodash";
 
 const style = {
   position: "absolute" as "absolute",
@@ -55,92 +60,55 @@ const List = () => {
 
   const getList = async (): Promise<any> => {
     setLoading(true);
-    try {
-      const data = await VehicleService.GetVehicles(pagination);
-      if (data && "Error" in data) {
-        setAlert({
-          ...alert,
-          open: true,
-          alert: {
-            type: "error",
-            message: "Error al cargar la lista de Vehiculos",
-          },
-        });
-      } else {
-        let list: IVehicle[] = [];
-        if (data && data.list && data.list.length > 0) {
-          list = data.list.map((vehicle: IVehicle) => ({
-            ...vehicle,
-            id: vehicle._id ?? "0",
-          }));
-        }
-        data.list = [];
-        data.filters = pagination.filters;
-        setPagination(data);
-        setVehicles(list);
+    let list: IVehicle[] = [];
+    await findByPagination(pagination).then((data: IPagination | any) => {
+      if (!_.isNil(data) && "list" in data && data.list.length > 0) {
+        list = data.list.map((vehicle: IVehicle) => ({
+          ...vehicle,
+          id: vehicle._id ?? "0",
+        }));
       }
+      setPagination({ ...data, list: [], filters: pagination.filters });
+    });
+    setVehicles(list);
+    setTimeout(() => {
       setLoading(false);
-    } catch (error) {
-      setAlert({
-        ...alert,
-        open: true,
-        alert: {
-          type: "error",
-          message: "Error al cargar la lista de Vehiculos",
-        },
-      });
-      setLoading(false);
-    }
+    }, 1000);
   };
 
   const ChangeAlive = async (id: string, alive: boolean): Promise<any> => {
-    const data = await VehicleService.DisabledVehicle(id, !alive);
-
-    if (data) {
+    await DisabledVehicle(id, !alive).then((data: any) => {
       setAlert({
         ...alert,
         open: true,
         alert: {
-          type: "success",
+          type:
+            "vehicleFound" in data && !_.isNil(data.vehicleFound._id)
+              ? "success"
+              : "error",
           message: data.message,
         },
       });
-      getList();
-    } else {
-      setAlert({
-        ...alert,
-        open: true,
-        alert: {
-          type: "error",
-          message: "Hubo un error al cambiar el estado del vehículo.",
-        },
-      });
-    }
+    });
+    getList();
   };
 
   const Delete = async (id: string): Promise<any> => {
-    const data = await VehicleService.DeletedVehicle(id);
-    if (data) {
+    handleClose();
+    await DeletedVehicle(id).then((data: any) => {
       setAlert({
         ...alert,
         open: true,
         alert: {
-          type: "success",
+          type:
+            "vehicleFound" in data && !_.isNil(data.vehicleFound._id)
+              ? "success"
+              : "error",
           message: data.message,
         },
       });
-      getList();
-      handleClose();
-    } else {
-      setAlert({
-        ...alert,
-        open: true,
-        alert: {
-          type: "error",
-          message: "Hubo un error al eliminar el vehículo.",
-        },
-      });
-    }
+    });
+    getList();
   };
 
   useEffect(() => {
@@ -190,18 +158,9 @@ const List = () => {
         <Box sx={{ ...style, width: 500 }}>
           <h2 id="child-modal-title">Estimado Usuario</h2>
           <p id="child-modal-description">
-            ¿Esta seguro de que desea elimar el vehiculo?
+            ¿Esta seguro que desea elimar el vehiculo?
           </p>
           <Grid container spacing={2} justifyContent="space-between">
-            <Grid item xs={5}>
-              <Button
-                fullWidth
-                variant="contained"
-                onClick={() => Delete(idDeleted)}
-              >
-                Eliminar
-              </Button>
-            </Grid>
             <Grid item xs={5}>
               <Button
                 fullWidth
@@ -215,6 +174,15 @@ const List = () => {
                 onClick={handleClose}
               >
                 Cancelar
+              </Button>
+            </Grid>
+            <Grid item xs={5}>
+              <Button
+                fullWidth
+                variant="contained"
+                onClick={() => Delete(idDeleted)}
+              >
+                Eliminar
               </Button>
             </Grid>
           </Grid>

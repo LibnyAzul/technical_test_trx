@@ -5,15 +5,13 @@ import _ from "lodash";
 
 const API: string = process.env.REACT_APP_API!;
 
-export const GetVehicles = async (
+export const findByPagination = async (
   pagination: IPagination
 ): Promise<AxiosResponse | any> => {
   const URL: string = `${API}/vehicle`;
   const method = "post";
   try {
-    const response: AxiosResponse = await axios[method](URL, {
-      data: pagination,
-    });
+    const response: AxiosResponse = await axios[method](URL, pagination);
     return response.data;
   } catch (err: any) {
     return err?.response?.data;
