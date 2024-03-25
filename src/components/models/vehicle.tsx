@@ -143,7 +143,6 @@ export const GenerateColumns = (navigate: any, ChangeAlive: any, handleOpen: any
       type: "actions",
       headerName: "Actions",
       cellClassName: "actions",
-      flex: 1,
       getActions: (params: GridRowParams) => [
         <GridActionsCellItem
           key={`${params.id}-1`}

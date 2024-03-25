@@ -200,6 +200,7 @@ const TestDataGrid: FC<TestDataGridProps> = (props: TestDataGridProps) => {
                   : filterItem.value,
             };
             filters.push(filter);
+            pagination.page = 1;
           } else {
             <Alert severity="error">
               {`Por el momento no se cuenta con el filtro: "${String(filterItem.operatorValue)}".`}
@@ -215,6 +216,7 @@ const TestDataGrid: FC<TestDataGridProps> = (props: TestDataGridProps) => {
             value: null,
           };
           filters.push(filter);
+          pagination.page = 1;
         }
       });
     }
@@ -282,6 +284,7 @@ const TestDataGrid: FC<TestDataGridProps> = (props: TestDataGridProps) => {
           value: filterItem.sort,
         };
         filters.push(filter);
+        pagination.page = 1;
       });
     }
     pagination.filters = filters;

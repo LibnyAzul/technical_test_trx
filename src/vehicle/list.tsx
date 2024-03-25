@@ -58,9 +58,10 @@ const List = () => {
     setOpen(false);
   };
 
-  const getList = async (): Promise<any> => {
+  const getList = async () => {
     setLoading(true);
     let list: IVehicle[] = [];
+    console.log(pagination);
     await findByPagination(pagination).then((data: IPagination | any) => {
       if (!_.isNil(data) && "list" in data && data.list.length > 0) {
         list = data.list.map((vehicle: IVehicle) => ({
@@ -112,6 +113,7 @@ const List = () => {
   };
 
   useEffect(() => {
+    console.log(iPagination);
     getList();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -137,14 +139,16 @@ const List = () => {
             title="Vehículos"
           />
           <CardContent>
-            <DataGrid
-              loading={loading}
-              list={vehicles}
-              columns={GenerateColumns(navigate, ChangeAlive, handleOpen)}
-              getList={getList}
-              objectForPagination={pagination}
-              setObjectForPagination={setPagination}
-            />
+            <Box key="VehicleList" id="VehicleList">
+              <DataGrid
+                loading={loading}
+                list={vehicles}
+                columns={GenerateColumns(navigate, ChangeAlive, handleOpen)}
+                getList={getList}
+                objectForPagination={pagination}
+                setObjectForPagination={setPagination}
+              />
+            </Box>
           </CardContent>
         </Card>
         <CustomAlerts params={alert} closeAlert={handleCloseAlert} />

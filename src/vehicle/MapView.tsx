@@ -53,8 +53,6 @@ const MapView = () => {
   const navigate = useNavigate();
   const params = useParams();
   const [filterDate, setFilterDate] = useState<Dayjs | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [pagination, setPagination] = useState<IPagination>(iPagination);
   const [coors, setCoors] = useState<google.maps.LatLngLiteral[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [notFound, setNotFound] = useState<boolean>(false);
@@ -79,7 +77,12 @@ const MapView = () => {
   const handleCloseAlert = () => setAlert({ ...alert, open: false });
 
   const handlefilters = async () => {
-    let pg: IPagination = iPagination;
+    var pg: IPagination = {
+      page: 1,
+      objectsPerPage: 25,
+      maxPage: 1,
+      filters: [],
+    };
     setNotFound(false);
     if (filterDate !== null) {
       setLoading(true);
@@ -130,7 +133,6 @@ const MapView = () => {
     setTimeout(() => {
       setLoading(false);
     }, 1000);
-    setPagination({ ...pg, list: [] });
   };
 
   useEffect(() => {
@@ -149,7 +151,7 @@ const MapView = () => {
               color="primary"
               size="small"
               aria-label="home"
-              onClick={() => navigate("/")}
+              onClick={() => navigate(-1)}
             >
               <FormatListNumberedIcon />
             </Fab>
@@ -171,7 +173,7 @@ const MapView = () => {
                   <DemoContainer components={["DatePicker"]}>
                     <DatePicker
                       label="Seleccione una fecha"
-                      disableFuture
+                      // disableFuture
                       format="DD/MM/YYYY"
                       value={filterDate}
                       onChange={(value) => {
